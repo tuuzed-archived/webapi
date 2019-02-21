@@ -1,0 +1,21 @@
+apply plugin: 'maven'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            pom.groupId = project.groupId
+            pom.artifactId = project.artifactId
+            pom.version = project.versionName
+            repository(url: "file:" + rootProject.file("maven"))
+        }
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+
+artifacts {
+    archives sourcesJar
+}

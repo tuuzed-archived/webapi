@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'gitvc-plugin'
+apply plugin: 'org.jetbrains.kotlin.jvm'
+
+ext.groupId = 'com.tuuzed.common'
+ext.artifactId = 'webapi-proxy'
+ext.versionName = String.valueOf(VERSION_NAME)
+
+sourceCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    testImplementation 'junit:junit:4.12'
+}
+
+apply from: '../maven-deployer.gradle'

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="com.tuuzed.common.ok-webapi.main" target="1.8" />
+      <module name="com.tuuzed.common.ok-webapi.test" target="1.8" />
+      <module name="com.tuuzed.common.OkWebApi.main" target="1.8" />
+      <module name="com.tuuzed.common.OkWebApi.test" target="1.8" />
+      <module name="com.tuuzed.common.webapi.main" target="1.8" />
+      <module name="com.tuuzed.common.webapi.test" target="1.8" />
+      <module name="ok-webapi.com.tuuzed.common.ok-webapi.main" target="1.8" />
+      <module name="ok-webapi.com.tuuzed.common.ok-webapi.test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
