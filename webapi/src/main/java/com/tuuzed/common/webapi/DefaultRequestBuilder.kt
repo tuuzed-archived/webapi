@@ -14,7 +14,7 @@ class DefaultRequestBuilder(
 ) : RequestBuilder {
 
     override fun buildRequest(
-        baseUrl: () -> String,
+        baseUrl: String,
         gson: Gson,
         webApiClass: Class<*>,
         method: Method,
@@ -78,7 +78,7 @@ class DefaultRequestBuilder(
                 }
             }
         }
-        val urlBuilder = StringBuilder(baseUrl())
+        val urlBuilder = StringBuilder(baseUrl)
         if (!urlBuilder.endsWith("/") && !endpointValue.startsWith("/")) {
             urlBuilder.append("/")
         }

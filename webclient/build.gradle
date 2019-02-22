@@ -1,10 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'kotlin'
-apply plugin: 'gitvc-plugin'
 
-ext.groupId = 'com.tuuzed.common.webapi'
-ext.artifactId = 'core'
-ext.versionName = String.valueOf(VERSION_NAME)
+group 'com.tuuzed.common.webapi'
+version '1.0.0'
 
 sourceCompatibility = 1.7
 
@@ -15,9 +13,5 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
-    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
-    implementation 'com.google.code.gson:gson:2.8.5'
     testImplementation 'junit:junit:4.12'
 }
-
-apply from: '../maven-deployer.gradle'

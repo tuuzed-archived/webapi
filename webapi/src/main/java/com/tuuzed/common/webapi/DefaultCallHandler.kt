@@ -14,6 +14,19 @@ import java.lang.reflect.ParameterizedType
  */
 class DefaultCallHandler : CallHandler {
 
+    override fun isSupported(
+        webApiClass: Class<*>,
+        method: Method,
+        args: Array<out Any?>
+    ): Boolean {
+        return method.genericReturnType.let {
+            if (it is ParameterizedType) {
+                return it.rawType == Resp::class.java || it.rawType == ListResp::class.java
+            }
+            false
+        }
+    }
+
     override fun handleCall(
         call: Call,
         gson: Gson,
@@ -62,7 +75,11 @@ class DefaultCallHandler : CallHandler {
         }
     }
 
-    private fun createErrorRst(method: Method, tr: WebApiException, msg: String = tr.type.message): Any {
+    private fun createErrorRst(
+        method: Method,
+        tr: WebApiException,
+        msg: String = tr.type.message
+    ): Any {
         val genericReturnType = method.genericReturnType
         if (genericReturnType is ParameterizedType) {
             return when (genericReturnType.rawType) {

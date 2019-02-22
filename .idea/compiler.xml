@@ -6,8 +6,14 @@
       <module name="com.tuuzed.common.ok-webapi.test" target="1.8" />
       <module name="com.tuuzed.common.OkWebApi.main" target="1.8" />
       <module name="com.tuuzed.common.OkWebApi.test" target="1.8" />
+      <module name="com.tuuzed.common.sample.main" target="1.8" />
+      <module name="com.tuuzed.common.sample.test" target="1.8" />
       <module name="com.tuuzed.common.webapi.main" target="1.8" />
+      <module name="com.tuuzed.common.webapi.sample.main" target="1.7" />
+      <module name="com.tuuzed.common.webapi.sample.test" target="1.7" />
       <module name="com.tuuzed.common.webapi.test" target="1.8" />
+      <module name="com.tuuzed.common.webserver.main" target="1.8" />
+      <module name="com.tuuzed.common.webserver.test" target="1.8" />
       <module name="ok-webapi.com.tuuzed.common.ok-webapi.main" target="1.8" />
       <module name="ok-webapi.com.tuuzed.common.ok-webapi.test" target="1.8" />
     </bytecodeTargetLevel>

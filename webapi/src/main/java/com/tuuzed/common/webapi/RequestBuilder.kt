@@ -7,7 +7,7 @@ import java.lang.reflect.Method
 interface RequestBuilder {
 
     fun buildRequest(
-        baseUrl: () -> String,
+        baseUrl: String,
         gson: Gson,
         webApiClass: Class<*>,
         method: Method,

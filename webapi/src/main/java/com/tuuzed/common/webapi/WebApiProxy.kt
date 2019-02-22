@@ -11,9 +11,11 @@ class WebApiProxy @JvmOverloads constructor(
     gson: Gson = GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create(),
     private val client: OkHttpClient = OkHttpClient.Builder().build(),
     private val requestBuilder: RequestBuilder = DefaultRequestBuilder("utf-8"),
-    private val responseHandler: CallHandler = DefaultCallHandler()
+    callHandlers: Array<CallHandler> = emptyArray()
 ) {
-
+    
+    private val defaultCallHandler = DefaultCallHandler()
+    private val callHandlerList = listOf(*callHandlers)
     private val webApiGson: Gson = gson.newBuilder()
         .setExclusionStrategies(IgnoreAnnotationExclusionStrategy())
         .create()
@@ -25,8 +27,17 @@ class WebApiProxy @JvmOverloads constructor(
             arrayOf(webApiClass)
         ) { _, method, args ->
             return@newProxyInstance requestBuilder
-                .buildRequest(baseUrl, webApiGson, webApiClass, method, args)
-                .let { responseHandler.handleCall(client.newCall(it), webApiGson, webApiClass, method, args) }
+                .buildRequest(baseUrl(), webApiGson, webApiClass, method, args)
+                .let { request ->
+                    var callHandler: CallHandler = defaultCallHandler
+                    callHandlerList.forEach { handler ->
+                        if (handler.isSupported(webApiClass, method, args)) {
+                            callHandler = handler
+                            return@forEach
+                        }
+                    }
+                    return@let callHandler.handleCall(client.newCall(request), webApiGson, webApiClass, method, args)
+                }
         } as T
     }
 }
