@@ -18,7 +18,7 @@ class DefaultRequestBuilder(
         gson: Gson,
         webApiClass: Class<*>,
         method: Method,
-        args: Array<out Any?>
+        args: Array<out Any?>?
     ): Request {
         val endpoint = method.getAnnotation(Endpoint::class.java)
             ?: throw NullPointerException("调用方法没有使用@Endpoint标注")
@@ -43,27 +43,29 @@ class DefaultRequestBuilder(
                 headersBuilder.add(it.line)
             }
         }
-
-        val parameterAnnotations = method.parameterAnnotations
-        parameterAnnotations.forEachIndexed { index, arrayOfAnnotations ->
-            val arg = args[index]
-            arrayOfAnnotations.forEach {
-                when (it) {
-                    is Path -> endpointValue = endpointValue.replacePlaceholderAny(it.name, arg, it.encoded)
-                    is Query -> encodedQueryMap.putAnyUrlEncode(it.name, arg, true, it.encoded)
-                    is QueryMap -> encodedQueryMap.putAllAnyUrlEncode(arg, true, it.encoded)
-                    is Header -> headersBuilder.addAny(it.name, arg)
-                    is HeaderMap -> headersBuilder.addAllAny(arg)
-                    is Field -> fieldMap.putAnyUrlEncode(it.name, arg, isFormUrlEncoded, it.encoded)
-                    is FieldMap -> fieldMap.putAllAnyUrlEncode(arg, isFormUrlEncoded, it.encoded)
-                    is RawBody -> {
-                        if (arg is RequestBody) {
-                            requestBody = arg
+        args?.let {
+            val parameterAnnotations = method.parameterAnnotations
+            parameterAnnotations.forEachIndexed { index, arrayOfAnnotations ->
+                val arg = it[index]
+                arrayOfAnnotations.forEach {
+                    when (it) {
+                        is Path -> endpointValue = endpointValue.replacePlaceholderAny(it.name, arg, it.encoded)
+                        is Query -> encodedQueryMap.putAnyUrlEncode(it.name, arg, true, it.encoded)
+                        is QueryMap -> encodedQueryMap.putAllAnyUrlEncode(arg, true, it.encoded)
+                        is Header -> headersBuilder.addAny(it.name, arg)
+                        is HeaderMap -> headersBuilder.addAllAny(arg)
+                        is Field -> fieldMap.putAnyUrlEncode(it.name, arg, isFormUrlEncoded, it.encoded)
+                        is FieldMap -> fieldMap.putAllAnyUrlEncode(arg, isFormUrlEncoded, it.encoded)
+                        is RawBody -> {
+                            if (arg is RequestBody) {
+                                requestBody = arg
+                            }
                         }
                     }
                 }
             }
         }
+
         if (HttpMethod.permitsRequestBody(endpointMethod)) {
             if (requestBody == null) {
                 requestBody = if (isFormUrlEncoded) {

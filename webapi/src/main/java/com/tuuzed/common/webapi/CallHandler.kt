@@ -9,7 +9,7 @@ interface CallHandler {
     fun isSupported(
         webApiClass: Class<*>,
         method: Method,
-        args: Array<out Any?>
+        args: Array<out Any?>?
     ): Boolean
 
     fun handleCall(
@@ -17,7 +17,7 @@ interface CallHandler {
         gson: Gson,
         webApiClass: Class<*>,
         method: Method,
-        args: Array<out Any?>
+        args: Array<out Any?>?
     ): Any?
 
 }

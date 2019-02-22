@@ -11,7 +11,7 @@ interface RequestBuilder {
         gson: Gson,
         webApiClass: Class<*>,
         method: Method,
-        args: Array<out Any?>
+        args: Array<out Any?>?
     ): Request
 
 }

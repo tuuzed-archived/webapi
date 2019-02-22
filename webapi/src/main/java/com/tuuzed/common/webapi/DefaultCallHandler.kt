@@ -17,7 +17,7 @@ class DefaultCallHandler : CallHandler {
     override fun isSupported(
         webApiClass: Class<*>,
         method: Method,
-        args: Array<out Any?>
+        args: Array<out Any?>?
     ): Boolean {
         return method.genericReturnType.let {
             if (it is ParameterizedType) {
@@ -32,7 +32,7 @@ class DefaultCallHandler : CallHandler {
         gson: Gson,
         webApiClass: Class<*>,
         method: Method,
-        args: Array<out Any?>
+        args: Array<out Any?>?
     ): Any? {
         try {
             val response = call.execute()

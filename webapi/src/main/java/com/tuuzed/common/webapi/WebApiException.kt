@@ -16,4 +16,10 @@ class WebApiException @JvmOverloads constructor(
     }
 
     constructor(type: Type, cause: Throwable?) : this(type, type.message, cause)
+
+    override fun toString(): String {
+        return "WebApiException(type=$type)"
+    }
+
+
 }
