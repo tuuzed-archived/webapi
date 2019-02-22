@@ -2,9 +2,12 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 apply plugin: 'gitvc-plugin'
 
-ext.groupId = 'com.tuuzed.common.webapi'
-ext.artifactId = 'core'
-ext.versionName = String.valueOf(VERSION_NAME)
+ext.GroupId = 'com.tuuzed.common'
+ext.ArtifactId = 'webapi'
+ext.Version = String.valueOf(VERSION_NAME)
+
+group = 'com.tuuzed.common.webapi'
+version = String.valueOf(VERSION_NAME)
 
 sourceCompatibility = 1.7
 
