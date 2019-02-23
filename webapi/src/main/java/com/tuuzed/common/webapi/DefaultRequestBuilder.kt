@@ -9,12 +9,14 @@ import java.lang.reflect.Method
 import java.net.URLEncoder
 import java.util.*
 
+
 class DefaultRequestBuilder(
     private val charset: String
 ) : RequestBuilder {
 
     override fun buildRequest(
         baseUrl: String,
+        dateToString: DateToString,
         gson: Gson,
         webApiClass: Class<*>,
         method: Method,
@@ -50,12 +52,12 @@ class DefaultRequestBuilder(
                 arrayOfAnnotations.forEach {
                     when (it) {
                         is Path -> endpointValue = endpointValue.replacePlaceholderAny(it.name, arg, it.encoded)
-                        is Query -> encodedQueryMap.putAnyUrlEncode(it.name, arg, true, it.encoded)
-                        is QueryMap -> encodedQueryMap.putAllAnyUrlEncode(arg, true, it.encoded)
+                        is Query -> encodedQueryMap.putAnyUrlEncode(it.name, arg, true, it.encoded, dateToString)
+                        is QueryMap -> encodedQueryMap.putAllAnyUrlEncode(arg, true, it.encoded, dateToString)
                         is Header -> headersBuilder.addAny(it.name, arg)
                         is HeaderMap -> headersBuilder.addAllAny(arg)
-                        is Field -> fieldMap.putAnyUrlEncode(it.name, arg, isFormUrlEncoded, it.encoded)
-                        is FieldMap -> fieldMap.putAllAnyUrlEncode(arg, isFormUrlEncoded, it.encoded)
+                        is Field -> fieldMap.putAnyUrlEncode(it.name, arg, isFormUrlEncoded, it.encoded, dateToString)
+                        is FieldMap -> fieldMap.putAllAnyUrlEncode(arg, isFormUrlEncoded, it.encoded, dateToString)
                         is RawBody -> {
                             if (arg is RequestBody) {
                                 requestBody = arg
@@ -134,13 +136,14 @@ class DefaultRequestBuilder(
     private fun HashMap<String, String>.putAllAnyUrlEncode(
         value: Any?,
         needEncode: Boolean,
-        encoded: Boolean
+        encoded: Boolean,
+        dateToString: DateToString
     ) {
         if (value is Map<*, *>) {
             value.forEach { entry ->
                 entry.key?.let {
                     if (it is String) {
-                        putAnyUrlEncode(it, entry.value, needEncode, encoded)
+                        putAnyUrlEncode(it, entry.value, needEncode, encoded, dateToString)
                     }
                 }
             }
@@ -151,11 +154,15 @@ class DefaultRequestBuilder(
         name: String,
         value: Any?,
         needEncode: Boolean,
-        encoded: Boolean
+        encoded: Boolean,
+        dateToString: DateToString
     ) {
         if ("" == name) return
         this[name] = when (value) {
             is String -> if (needEncode && !encoded) URLEncoder.encode(value, charset) else value
+            is Date -> if (needEncode && !encoded) URLEncoder.encode(dateToString(value), charset) else dateToString(
+                value
+            )
             null -> ""
             else -> if (needEncode && !encoded) URLEncoder.encode("$value", charset) else "$value"
         }

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-    <component name="CompilerConfiguration">
-        <bytecodeTargetLevel>
-            <module name="com.tuuzed.common.sample.main" target="1.8"/>
-            <module name="com.tuuzed.common.sample.test" target="1.8"/>
-            <module name="com.tuuzed.common.webapi.main" target="1.8"/>
-            <module name="com.tuuzed.common.webapi.sample.main" target="1.7"/>
-            <module name="com.tuuzed.common.webapi.sample.test" target="1.7"/>
-            <module name="com.tuuzed.common.webapi.test" target="1.8"/>
-            <module name="com.tuuzed.common.webserver.main" target="1.8"/>
-            <module name="com.tuuzed.common.webserver.test" target="1.8"/>
-            <module name="webapi-proxy.webapi.main" target="1.7"/>
-            <module name="webapi-proxy.webapi.test" target="1.7"/>
-        </bytecodeTargetLevel>
-    </component>
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="com.tuuzed.common.sample.main" target="1.8" />
+      <module name="com.tuuzed.common.sample.test" target="1.8" />
+      <module name="com.tuuzed.common.webapi.main" target="1.8" />
+      <module name="com.tuuzed.common.webapi.sample.main" target="1.7" />
+      <module name="com.tuuzed.common.webapi.sample.test" target="1.7" />
+      <module name="com.tuuzed.common.webapi.test" target="1.8" />
+      <module name="com.tuuzed.common.webapi.webapi.main" target="1.7" />
+      <module name="com.tuuzed.common.webapi.webapi.test" target="1.7" />
+      <module name="com.tuuzed.common.webserver.main" target="1.8" />
+      <module name="com.tuuzed.common.webserver.test" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
 </project>

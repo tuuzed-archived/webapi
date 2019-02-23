@@ -2,14 +2,15 @@ package com.tuuzed.common.webapi
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.tuuzed.common.webapi.http.Endpoint
 import com.tuuzed.common.webapi.internal.IgnoreAnnotationExclusionStrategy
 import okhttp3.OkHttpClient
 import java.lang.reflect.Proxy
+import java.text.SimpleDateFormat
 
 class WebApiProxy @JvmOverloads constructor(
     private val baseUrl: () -> String,
-    gson: Gson = GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create(),
+    private val datePattern: String = "yyyy-MM-dd HH:mm:ss",
+    gson: Gson = GsonBuilder().setDateFormat(datePattern).create(),
     private val client: OkHttpClient = OkHttpClient.Builder().build(),
     private val requestBuilder: RequestBuilder = DefaultRequestBuilder("utf-8"),
     callHandlers: Array<CallHandler> = emptyArray()
@@ -28,7 +29,14 @@ class WebApiProxy @JvmOverloads constructor(
             arrayOf(webApiClass)
         ) { _, method, args ->
             requestBuilder
-                .buildRequest(baseUrl(), webApiGson, webApiClass, method, args)
+                .buildRequest(
+                    baseUrl(),
+                    { SimpleDateFormat(datePattern).format(it) },
+                    webApiGson,
+                    webApiClass,
+                    method,
+                    args
+                )
                 .let { request ->
                     var callHandler: CallHandler = defaultCallHandler
                     callHandlerList.forEach { handler ->
