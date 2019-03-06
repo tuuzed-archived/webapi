@@ -3,10 +3,10 @@ apply plugin: 'maven'
 uploadArchives {
     repositories {
         mavenDeployer {
-            pom.groupId = project.GroupId
-            pom.artifactId = project.ArtifactId
-            pom.version = project.Version
-            repository(url: "file:" + rootProject.file("maven"))
+            pom.groupId = project.pom["groupId"]
+            pom.artifactId = project.pom["artifactId"]
+            pom.version = project.pom["version"]
+            repository(url: "file:" + rootDir.getAbsolutePath() + "/maven/")
         }
     }
 }
@@ -15,6 +15,7 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.java.srcDirs
     classifier = 'sources'
 }
+
 
 artifacts {
     archives sourcesJar

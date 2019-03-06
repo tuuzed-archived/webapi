@@ -1,13 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'kotlin'
-apply plugin: 'gitvc-gradle-plugin'
 
-ext.GroupId = 'com.tuuzed.common'
-ext.ArtifactId = 'webapi'
-ext.Version = String.valueOf(GitVC.VERSION_NAME)
-
-group = 'com.tuuzed.common.webapi'
-version = String.valueOf(GitVC.VERSION_NAME)
+group = pomGroupId
+version = pomVersion
 
 sourceCompatibility = 1.7
 
@@ -23,4 +18,11 @@ dependencies {
     testImplementation 'junit:junit:4.12'
 }
 
-apply from: '../maven-deployer.gradle'
+ext.pom = [
+        "groupId"   : pomGroupId,
+        "artifactId": 'kotlin',
+        "version"   : pomVersion,
+]
+
+apply from: '../gradle/maven-deployer.gradle'
+apply from: '../gradle/bintray-release.gradle'
