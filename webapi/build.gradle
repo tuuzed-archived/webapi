@@ -20,7 +20,7 @@ dependencies {
 
 ext.pom = [
         "groupId"   : pomGroupId,
-        "artifactId": 'kotlin',
+        "artifactId": 'webapi',
         "version"   : pomVersion,
 ]
 
