@@ -5,14 +5,11 @@ apply plugin: 'io.spring.dependency-management'
 
 
 group 'com.tuuzed.common.webapi'
-version '1.0.0'
+group = rootProject.group
+version = rootProject.version
 
 sourceCompatibility = 1.7
 
-repositories {
-    maven { url 'http://maven.aliyun.com/nexus/content/groups/public/' }
-    mavenCentral()
-}
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'

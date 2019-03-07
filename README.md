@@ -1,6 +1,8 @@
 # webapi-proxy
 
-### Download
+[ ![Download](https://api.bintray.com/packages/tuuzed/maven/webapi/images/download.svg) ](https://bintray.com/tuuzed/maven/webapi/_latestVersion)
+
+### 添加依赖
 
 ``` groovy
 repositories {
@@ -8,7 +10,6 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.tuuzed.common:webapi:1.0.0'
+    implementation 'com.tuuzed.common:webapi:latest.release'
 }
 ```
-

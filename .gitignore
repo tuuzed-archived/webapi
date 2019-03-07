@@ -1,6 +1,3 @@
-/maven/
-local.properties
-
 # Created by .ignore support plugin (hsz.mobi)
 ### Gradle template
 .gradle
@@ -71,3 +68,5 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
+### Custom
+.repo
