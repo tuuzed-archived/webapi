@@ -1,6 +1,9 @@
 package com.tuuzed.common.webapi.http
 
-@Target(AnnotationTarget.VALUE_PARAMETER)
+@Target(
+    AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.TYPE_PARAMETER
+)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class Path(
     val name: String,
