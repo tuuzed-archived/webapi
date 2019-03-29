@@ -27,10 +27,9 @@ class DefaultRequestBuilder(
 
         val endpointMethod = endpoint.method
         var endpointValue = endpoint.value
-        val encodedQueryMap = HashMap<String, String>()
+        val encodedQueryMap = linkedMapOf<String, String>()
         val headersBuilder = Headers.Builder()
-
-        val fieldMap = HashMap<String, String>()
+        val fieldMap = linkedMapOf<String, String>()
         val isFormUrlEncoded = method.getAnnotation(FormUrlEncoded::class.java) != null
         var requestBody: RequestBody? = null
 
@@ -121,7 +120,7 @@ class DefaultRequestBuilder(
         )
     }
 
-    private fun HashMap<String, String>.toQueryString(): String {
+    private fun MutableMap<String, String>.toQueryString(): String {
         val queryString = StringBuilder()
         var first = true
         this.forEach {
@@ -133,7 +132,7 @@ class DefaultRequestBuilder(
     }
 
 
-    private fun HashMap<String, String>.putAllAnyUrlEncode(
+    private fun MutableMap<String, String>.putAllAnyUrlEncode(
         value: Any?,
         needEncode: Boolean,
         encoded: Boolean,
@@ -150,7 +149,7 @@ class DefaultRequestBuilder(
         }
     }
 
-    private fun HashMap<String, String>.putAnyUrlEncode(
+    private fun MutableMap<String, String>.putAnyUrlEncode(
         name: String,
         value: Any?,
         needEncode: Boolean,
