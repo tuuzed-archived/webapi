@@ -11,20 +11,17 @@ buildscript {
         classpath 'com.novoda:bintray-release:0.9'
     }
 }
+
+apply plugin: 'java'
+
 allprojects {
     repositories {
         maven { url 'https://maven.aliyun.com/repository/public' }
         mavenCentral()
     }
+    sourceCompatibility = 1.7
+    targetCompatibility = 1.7
 }
-
-apply plugin: 'java'
 
 group 'com.tuuzed.common'
-version '1.0.2'
-
-sourceCompatibility = 1.7
-
-dependencies {
-    testImplementation 'junit:junit:4.12'
-}
+version '1.0.3'
