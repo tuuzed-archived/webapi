@@ -55,6 +55,7 @@ publish {
     bintrayKey = System.getenv('BINTRAY_API_KEY')
     userOrg = 'tuuzed'
     repoName = 'maven'
+    uploadName = 'com.tuuzed.common:webapi'
     dryRun = false
     override = true
     groupId = pomMetadata.groupId
