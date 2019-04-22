@@ -2,17 +2,18 @@ package com.tuuzed.webapi
 
 import okhttp3.OkHttpClient
 import java.lang.reflect.Proxy
-import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 
 class WebApiProxy @JvmOverloads constructor(
     private val baseUrl: () -> String,
     private val client: OkHttpClient = OkHttpClient.Builder().build(),
     private val callAdapter: CallAdapter = DefaultCallAdapter(),
-    private val charset: Charset = Charsets.UTF_8,
-    private val dateToString: DateToString = { SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(it) },
-    private val requestBuilder: RequestBuilder = DefaultRequestBuilder(baseUrl, charset, dateToString),
-    private val converter: Converter = DefaultConverter()
+    private val converter: Converter = DefaultConverter(),
+    private val requestBuilder: RequestBuilder = DefaultRequestBuilder(
+        baseUrl = baseUrl,
+        charset = Charsets.UTF_8,
+        dateToString = { SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(it) }
+    )
 ) {
 
     companion object {
