@@ -1,5 +1,4 @@
 rootProject.name = 'webapi-proxy'
 include 'webapi'
-include 'webclient'
-include 'webserver'
+include 'webapi-sample'
 

@@ -12,8 +12,10 @@
       <module name="com.tuuzed.common.webapi.webclient.test" target="1.7" />
       <module name="com.tuuzed.common.webapi.webserver.main" target="1.7" />
       <module name="com.tuuzed.common.webapi.webserver.test" target="1.7" />
-      <module name="webapi-proxy.webapi.main" target="1.7" />
-      <module name="webapi-proxy.webapi.test" target="1.7" />
+      <module name="webapi-proxy.webclient.main" target="1.7" />
+      <module name="webapi-proxy.webclient.test" target="1.7" />
+      <module name="webapi-proxy.webserver.main" target="1.7" />
+      <module name="webapi-proxy.webserver.test" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>
