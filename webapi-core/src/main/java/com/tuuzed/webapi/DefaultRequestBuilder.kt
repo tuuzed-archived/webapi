@@ -11,12 +11,11 @@ import java.nio.charset.Charset
 import java.text.SimpleDateFormat
 import java.util.*
 
-internal class RequestConverterImpl(
+internal class DefaultRequestBuilder(
     private val baseUrl: () -> String,
-    private val logger: Logger? = null,
     private val charset: Charset = Charsets.UTF_8,
     private val dateToString: DateToString = { SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(it) }
-) : RequestConverter {
+) : RequestBuilder {
 
     override fun invoke(webApiClazz: Class<*>, method: Method, args: Array<Any>?): Request {
         return createRequest(webApiClazz, method, args)
@@ -38,7 +37,7 @@ internal class RequestConverterImpl(
         if (args != null) {
             method.parameterAnnotations.forEachIndexed { index, annotations ->
                 val argVal = args[index]
-                logger?.invoke("argVal: $argVal, annotations: ${Arrays.toString(annotations)}")
+                LOG("argVal: $argVal, annotations: ${Arrays.toString(annotations)}")
                 annotations.forEach {
                     when (it) {
                         is Path -> endpointValue = endpointValue.replacePlaceholderAny(it.name, argVal, it.encoded)
@@ -111,8 +110,8 @@ internal class RequestConverterImpl(
             }
         }
 
-        logger?.invoke("urlBuilder: $urlBuilder")
-        logger?.invoke("httpMethod: $httpMethod")
+        LOG("urlBuilder: $urlBuilder")
+        LOG("httpMethod: $httpMethod")
 
         return Request.Builder()
             .url(urlBuilder.toString())

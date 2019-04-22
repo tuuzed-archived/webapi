@@ -1,7 +1,7 @@
 # Created by .ignore support plugin (hsz.mobi)
 ### Gradle template
 .gradle
-build/
+/build/
 
 # Ignore Gradle GUI config
 gradle-app.setting
@@ -68,5 +68,3 @@ fabric.properties
 # Editor-based Rest Client
 .idea/httpRequests
 
-### Custom
-.repo

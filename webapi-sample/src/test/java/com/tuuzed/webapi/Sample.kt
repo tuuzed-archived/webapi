@@ -1,5 +1,6 @@
 package com.tuuzed.webapi
 
+import com.tuuzed.webapi.converter.GsonConverter
 import com.tuuzed.webapi.sample.WebApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -12,6 +13,9 @@ class Sample {
 
     @Before
     fun create() {
+        WebApiProxy.registerLogger {
+            System.out.println("WebApiProxy=> $it")
+        }
         api = WebApiProxy(
             client = OkHttpClient.Builder()
                 .addInterceptor(HttpLoggingInterceptor(
@@ -19,7 +23,8 @@ class Sample {
                         System.err.println("HttpClient=> $message")
                     }).also { it.level = HttpLoggingInterceptor.Level.BODY }
                 ).build(),
-            baseUrl = { "http://localhost:8080" }
+            baseUrl = { "http://localhost:8080" },
+            converter = GsonConverter()
         ).create(WebApi::class.java)
     }
 
@@ -32,7 +37,7 @@ class Sample {
             headers = mapOf(Pair("x-hkey", "hval"))
         ).execute()
         println("========================================")
-        println(res.body()?.string() ?: "==empty body==")
+        println(res)
         println("========================================")
     }
 }

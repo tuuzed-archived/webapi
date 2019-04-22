@@ -1,4 +1,5 @@
 rootProject.name = 'webapi-proxy'
-include 'webapi'
+include 'webapi-core'
+include 'webapi-converter-gson'
 include 'webapi-sample'
 

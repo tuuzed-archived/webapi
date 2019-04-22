@@ -3,6 +3,7 @@ apply plugin: 'kotlin'
 
 group = rootProject.group
 version = rootProject.version
+ext.artifactId = 'webapi'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
@@ -16,5 +17,5 @@ dependencies {
 }
 
 
-apply from: './publish.gradle'
+apply from: '../publish.gradle'
 

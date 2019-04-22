@@ -9,12 +9,19 @@ class WebApiProxy @JvmOverloads constructor(
     private val baseUrl: () -> String,
     private val client: OkHttpClient = OkHttpClient.Builder().build(),
     private val callAdapter: CallAdapter = DefaultCallAdapter(),
-    private val logger: Logger? = null,
     private val charset: Charset = Charsets.UTF_8,
     private val dateToString: DateToString = { SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(it) },
-    private val requestConverter: RequestConverter = RequestConverterImpl(baseUrl, logger, charset, dateToString),
-    private val responseConverter: ResponseConverter = DefaultResponseConverter()
+    private val requestBuilder: RequestBuilder = DefaultRequestBuilder(baseUrl, charset, dateToString),
+    private val converter: Converter = DefaultConverter()
 ) {
+
+    companion object {
+        var logger: Logger? = null
+        @JvmStatic
+        fun registerLogger(logger: Logger?) {
+            this.logger = logger
+        }
+    }
 
     fun <T> create(webApiClazz: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
@@ -22,8 +29,8 @@ class WebApiProxy @JvmOverloads constructor(
             webApiClazz.classLoader,
             arrayOf(webApiClazz)
         ) { _, method, args ->
-            val request = requestConverter(webApiClazz, method, args)
-            return@newProxyInstance callAdapter(responseConverter, client.newCall(request))
+            val request = requestBuilder.invoke(webApiClazz, method, args)
+            return@newProxyInstance callAdapter.invoke(method, converter, client.newCall(request))
         } as T
     }
 

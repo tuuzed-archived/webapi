@@ -3,7 +3,7 @@ apply plugin: 'com.novoda.bintray-release'
 
 def pomMetadata = [
         'groupId'   : project.group ?: rootProject.group,
-        'artifactId': project.name,
+        'artifactId': project.artifactId ?: project.name,
         'version'   : project.version ?: rootProject.version,
         'desc'      : 'webapi-proxy',
         'website'   : 'https://github.com/tuuzed/webapi-proxy'
@@ -55,7 +55,7 @@ publish {
     bintrayKey = System.getenv('BINTRAY_API_KEY')
     userOrg = 'tuuzed'
     repoName = 'maven'
-    uploadName = 'com.tuuzed.common:webapi'
+    uploadName = 'com.tuuzed.webapi:' + pomMetadata.artifactId
     dryRun = false
     override = true
     groupId = pomMetadata.groupId

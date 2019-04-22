@@ -1,6 +1,6 @@
 package com.tuuzed.webapi.sample
 
-data class Resp(
+data class RespData(
     var error: Boolean? = null,
     var msg: String? = null
 )
