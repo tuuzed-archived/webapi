@@ -8,13 +8,12 @@ import java.io.File
 import java.lang.reflect.Method
 import java.net.URLEncoder
 import java.nio.charset.Charset
-import java.text.SimpleDateFormat
 import java.util.*
 
 internal class DefaultRequestBuilder(
     private val baseUrl: () -> String,
-    private val charset: Charset = Charsets.UTF_8,
-    private val dateToString: DateToString = { SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(it) }
+    private val charset: Charset,
+    private val dateToString: DateToString
 ) : RequestBuilder {
 
     override fun invoke(webApiClazz: Class<*>, method: Method, args: Array<Any>?): Request {

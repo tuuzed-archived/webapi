@@ -8,7 +8,7 @@ interface CallAdapter {
     fun invoke(
         method: Method,
         converter: Converter,
-        originalCall: OriginalCall
+        originalCall: OkHttpCall
     ): Call<*>
 
 }
