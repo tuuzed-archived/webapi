@@ -39,7 +39,6 @@ interface Converter {
         }
     }
 
-
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
     fun <T> convert(returnType: Type, response: Response): T
