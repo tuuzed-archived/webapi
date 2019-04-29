@@ -10,7 +10,8 @@ import java.io.IOException
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
 
-class GsonConverter(
+class GsonConverter @JvmOverloads constructor(
+    private val convertResultAllowNull: Boolean = false,
     private val gson: Gson = GsonBuilder().create()
 ) : Converter {
 
@@ -26,11 +27,15 @@ class GsonConverter(
         return when (dataType) {
             null -> throw WebApiException.unsupportedReturnTypes()
             else -> try {
-                gson.fromJson<T>(
-                    response.body()?.charStream()
-                        ?: throw WebApiException.emptyResponseBody(),
+                val rst = gson.fromJson<T>(
+                    response.body()?.charStream() ?: throw WebApiException.emptyResponseBody(),
                     dataType
                 )
+                if (convertResultAllowNull) {
+                    rst
+                } else {
+                    rst ?: throw WebApiException.emptyResponseBody()
+                }
             } catch (e: JsonParseException) {
                 throw WebApiException.unsupportedReturnTypes(cause = e)
             } catch (e: Exception) {

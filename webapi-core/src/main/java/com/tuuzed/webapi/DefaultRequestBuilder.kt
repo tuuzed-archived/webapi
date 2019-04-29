@@ -2,6 +2,7 @@ package com.tuuzed.webapi
 
 import com.tuuzed.webapi.http.*
 import okhttp3.*
+import okhttp3.internal.Util
 import okhttp3.internal.http.HttpMethod
 import org.json.JSONObject
 import java.io.File
@@ -15,6 +16,7 @@ internal class DefaultRequestBuilder(
     private val charset: Charset,
     private val dateToString: DateToString
 ) : RequestBuilder {
+
 
     override fun invoke(webApiClazz: Class<*>, method: Method, args: Array<Any>?): Request {
         return createRequest(webApiClazz, method, args)
@@ -33,6 +35,7 @@ internal class DefaultRequestBuilder(
         val isFormUrlEncoded = method.isAnnotationPresent(FormUrlEncoded::class.java)
         webApiClazz.getAnnotation(Header::class.java)?.let { if (it.line.contains(":")) headersBuilder.add(it.line) }
         method.getAnnotation(Header::class.java)?.let { if (it.line.contains(":")) headersBuilder.add(it.line) }
+        //
         if (args != null) {
             method.parameterAnnotations.forEachIndexed { index, annotations ->
                 val argVal = args[index]
@@ -56,43 +59,64 @@ internal class DefaultRequestBuilder(
                             fileMap[it.name] = argVal
                             fileTypeMap[it.name] = it.mediaType
                         }
-                        is RawBody -> if (argVal is RequestBody) requestBodyList.add(argVal)
+                        is RawRequestBody -> if (argVal is RequestBody) requestBodyList.add(argVal)
                     }
                 }
             }
         }
-
+        //
         val httpMethod: String = endpoint.method
-        val requestBody: RequestBody? = if (HttpMethod.permitsRequestBody(httpMethod)) {
-            when {
-                method.isAnnotationPresent(Multipart::class.java) -> {
-                    MultipartBody.Builder().also { builder ->
-                        fieldMap.entries.forEach { builder.addFormDataPart(it.key, it.value) }
-                        fileMap.entries.forEach {
-                            builder.addFormDataPart(
-                                it.key,
-                                it.value.name,
-                                RequestBody.create(
-                                    MediaType.parse(fileTypeMap[it.key] ?: "application/octet-stream"),
-                                    it.value
-                                )
-                            )
+        val requestBody: RequestBody? =
+            if (HttpMethod.permitsRequestBody(httpMethod)) {
+                when {
+                    // 只有一个 RequestBody
+                    method.isAnnotationPresent(OnlyOneRequestBody::class.java) -> {
+                        if (requestBodyList.isEmpty()) {
+                            Util.EMPTY_REQUEST
+                        } else {
+                            requestBodyList.first
                         }
-                    }.build()
+                    }
+                    // Multipart 表单
+                    method.isAnnotationPresent(Multipart::class.java) -> {
+                        if (fieldMap.isEmpty() && fileMap.isEmpty() && requestBodyList.isEmpty()) {
+                            Util.EMPTY_REQUEST
+                        } else {
+                            MultipartBody.Builder().also { builder ->
+                                fieldMap.entries.forEach { builder.addFormDataPart(it.key, it.value) }
+                                fileMap.entries.forEach {
+                                    builder.addFormDataPart(
+                                        it.key,
+                                        it.value.name,
+                                        RequestBody.create(
+                                            MediaType.parse(fileTypeMap[it.key] ?: "application/octet-stream"),
+                                            it.value
+                                        )
+                                    )
+                                }
+                            }.build()
+                        }
+                    }
+                    // FormUrlEncoded  表单
+                    method.isAnnotationPresent(FormUrlEncoded::class.java) -> {
+                        if (fieldMap.isEmpty()) {
+                            Util.EMPTY_REQUEST
+                        } else {
+                            FormBody.Builder().also { builder ->
+                                fieldMap.entries.forEach { builder.addEncoded(it.key, it.value) }
+                            }.build()
+
+                        }
+                    }
+                    // 默认 application/json; 表单
+                    else -> RequestBody.create(
+                        MediaType.parse("application/json; charset=${charset.name()}"),
+                        JSONObject(fieldMap).toString()
+                    )
                 }
-                method.isAnnotationPresent(FormUrlEncoded::class.java) -> {
-                    FormBody.Builder().also { builder ->
-                        fieldMap.entries.forEach { builder.addEncoded(it.key, it.value) }
-                    }.build()
-                }
-                else -> RequestBody.create(
-                    MediaType.parse("application/json; charset=${charset.name()}"),
-                    JSONObject(fieldMap).toString()
-                )
+            } else {
+                null
             }
-        } else {
-            null
-        }
         val urlBuilder = StringBuilder(baseUrl())
         if (!urlBuilder.endsWith("/") && !endpointValue.startsWith("/")) {
             urlBuilder.append("/")

@@ -1,5 +1,5 @@
 package com.tuuzed.webapi.http
 
-@Target(AnnotationTarget.VALUE_PARAMETER)
+@Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
-annotation class RawBody
+annotation class OnlyOneRequestBody

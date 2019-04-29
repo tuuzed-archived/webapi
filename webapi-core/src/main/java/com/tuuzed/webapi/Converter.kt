@@ -39,7 +39,6 @@ interface Converter {
         }
     }
 
-
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
     fun <T> invoke(returnType: Type, response: OkHttpResponse): T
