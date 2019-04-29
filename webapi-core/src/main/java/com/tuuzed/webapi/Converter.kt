@@ -6,19 +6,16 @@ import okio.BufferedSource
 import java.io.IOException
 import java.io.InputStream
 import java.io.Reader
-import java.lang.reflect.ParameterizedType
+import java.lang.reflect.Method
 import java.lang.reflect.Type
 
 interface Converter {
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    fun <T> tryInvoke(returnType: Type, response: Response): T {
-        val dataType = if (returnType is ParameterizedType) {
-            returnType.ownerType
-        } else {
-            null
-        }
+    fun <T> tryInvoke(method: Method, args: Array<Any?>?, response: Response): T {
+        val returnType = ParameterizedTypeImpl(method.genericReturnType)
+        val dataType = returnType.ownerType
         LOG("DefaultConverter: dataType=$dataType")
         return when (dataType) {
             Response::class.java -> response as T
@@ -35,12 +32,12 @@ interface Converter {
             BufferedSource::class.java -> response.body()?.source() as T
                 ?: throw WebApiException(WebApiException.CauseType.EMPTY_RESPONSE_BODY)
             null -> throw WebApiException.unsupportedReturnTypes()
-            else -> return invoke(returnType, response)
+            else -> return invoke(dataType, args, response)
         }
     }
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    fun <T> invoke(returnType: Type, response: okhttp3.Response): T
+    fun <T> invoke(dataType: Type, args: Array<Any?>?, response: Response): T
 
 }

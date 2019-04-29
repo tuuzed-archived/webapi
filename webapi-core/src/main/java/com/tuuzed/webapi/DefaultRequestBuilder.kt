@@ -18,11 +18,11 @@ internal class DefaultRequestBuilder(
 ) : RequestBuilder {
 
 
-    override fun invoke(webApiClazz: Class<*>, method: Method, args: Array<Any>?): Request {
+    override fun invoke(webApiClazz: Class<*>, method: Method, args: Array<Any?>?): Request {
         return createRequest(webApiClazz, method, args)
     }
 
-    private fun createRequest(webApiClazz: Class<*>, method: Method, args: Array<Any>?): Request {
+    private fun createRequest(webApiClazz: Class<*>, method: Method, args: Array<Any?>?): Request {
         val endpoint = method.getAnnotation(Endpoint::class.java)
             ?: throw IllegalStateException("Non @Endpoint, method: $method")
         var endpointValue = endpoint.value
@@ -44,26 +44,33 @@ internal class DefaultRequestBuilder(
             method.parameterAnnotations.forEachIndexed { index, annotations ->
                 val argVal = args[index]
                 LOG("argVal: $argVal, annotations: ${Arrays.toString(annotations)}")
-                annotations.forEach {
-                    when (it) {
-                        is Path -> endpointValue = endpointValue.replacePlaceholderAny(it.name, argVal, it.encoded)
-                        is Query -> encodedQueryMap.putAnyUrlEncode(it.name, argVal, true, it.encoded, dateToString)
-                        is QueryMap -> encodedQueryMap.putAllAnyUrlEncode(argVal, true, it.encoded, dateToString)
-                        is Header -> headersBuilder.addAny(it.name, argVal)
-                        is HeaderMap -> headersBuilder.addAllAny(argVal)
-                        is Field -> fieldMap.putAnyUrlEncode(
-                            it.name,
-                            argVal,
-                            isFormUrlEncoded,
-                            it.encoded,
-                            dateToString
-                        )
-                        is FieldMap -> fieldMap.putAllAnyUrlEncode(argVal, isFormUrlEncoded, it.encoded, dateToString)
-                        is FileField -> if (argVal is File) {
-                            fileMap[it.name] = argVal
-                            fileTypeMap[it.name] = it.mediaType
+                if (argVal != null) {
+                    annotations.forEach {
+                        when (it) {
+                            is Path -> endpointValue = endpointValue.replacePlaceholderAny(it.name, argVal, it.encoded)
+                            is Query -> encodedQueryMap.putAnyUrlEncode(it.name, argVal, true, it.encoded, dateToString)
+                            is QueryMap -> encodedQueryMap.putAllAnyUrlEncode(argVal, true, it.encoded, dateToString)
+                            is Header -> headersBuilder.addAny(it.name, argVal)
+                            is HeaderMap -> headersBuilder.addAllAny(argVal)
+                            is Field -> fieldMap.putAnyUrlEncode(
+                                it.name,
+                                argVal,
+                                isFormUrlEncoded,
+                                it.encoded,
+                                dateToString
+                            )
+                            is FieldMap -> fieldMap.putAllAnyUrlEncode(
+                                argVal,
+                                isFormUrlEncoded,
+                                it.encoded,
+                                dateToString
+                            )
+                            is FileField -> if (argVal is File) {
+                                fileMap[it.name] = argVal
+                                fileTypeMap[it.name] = it.mediaType
+                            }
+                            is RawRequestBody -> if (argVal is RequestBody) rawRequestBody = argVal
                         }
-                        is RawRequestBody -> if (argVal is RequestBody) rawRequestBody = argVal
                     }
                 }
             }

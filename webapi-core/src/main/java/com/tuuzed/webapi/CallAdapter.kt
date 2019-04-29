@@ -5,7 +5,7 @@ import java.lang.reflect.Method
 
 interface CallAdapter<T> {
 
-    fun invoke(method: Method, converter: Converter, okHttpCall: okhttp3.Call): T
+    fun invoke(method: Method, args: Array<Any?>?, converter: Converter, okHttpCall: okhttp3.Call): T
 
 
 }

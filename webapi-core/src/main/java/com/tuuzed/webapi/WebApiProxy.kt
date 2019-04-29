@@ -19,7 +19,6 @@ class WebApiProxy @JvmOverloads constructor(
     )
 ) {
 
-
     companion object {
         var logger: Logger? = null
         @JvmStatic
@@ -35,12 +34,12 @@ class WebApiProxy @JvmOverloads constructor(
             arrayOf(webApiClazz)
         ) { _, method, args ->
             val request = requestBuilder.invoke(webApiClazz, method, args)
-            return@newProxyInstance adapterInvoke(method, request)
+            return@newProxyInstance adapterInvoke(method, args, request)
         } as T
     }
 
-    private fun adapterInvoke(method: Method, request: Request): Any? {
-        return findCallAdapter(method)?.invoke(method, converter, client.newCall(request))
+    private fun adapterInvoke(method: Method, args: Array<Any?>?, request: Request): Any? {
+        return findCallAdapter(method)?.invoke(method, args, converter, client.newCall(request))
             ?: throw RuntimeException("call adapter error")
     }
 
