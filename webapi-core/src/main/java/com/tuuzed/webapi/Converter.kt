@@ -13,7 +13,7 @@ interface Converter {
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    fun <T> invoke(returnType: Type, response: Response): T {
+    fun <T> tryInvoke(returnType: Type, response: OkHttpResponse): T {
         val dataType = if (returnType is ParameterizedType) {
             returnType.ownerType
         } else {
@@ -35,13 +35,13 @@ interface Converter {
             BufferedSource::class.java -> response.body()?.source() as T
                 ?: throw WebApiException(WebApiException.CauseType.EMPTY_RESPONSE_BODY)
             null -> throw WebApiException.unsupportedReturnTypes()
-            else -> return convert(returnType, response)
+            else -> return invoke(returnType, response)
         }
     }
 
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    fun <T> convert(returnType: Type, response: Response): T
+    fun <T> invoke(returnType: Type, response: OkHttpResponse): T
 
 }

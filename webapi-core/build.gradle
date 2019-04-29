@@ -11,9 +11,7 @@ dependencies {
     implementation 'org.json:json:20180813'
     // 单元测试
     testImplementation 'junit:junit:4.12'
-    testImplementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
-    testImplementation 'io.vertx:vertx-core:3.7.0'
-    testImplementation 'io.vertx:vertx-web:3.7.0'
+
 }
 
 

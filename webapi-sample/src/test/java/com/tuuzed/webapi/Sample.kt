@@ -1,5 +1,6 @@
 package com.tuuzed.webapi
 
+import com.tuuzed.webapi.adapter.RxJava2CallAdapter
 import com.tuuzed.webapi.converter.GsonConverter
 import com.tuuzed.webapi.sample.WebApi
 import okhttp3.OkHttpClient
@@ -24,13 +25,28 @@ class Sample {
                     }).also { it.level = HttpLoggingInterceptor.Level.BODY }
                 ).build(),
             baseUrl = { "http://localhost:8080" },
-            converter = GsonConverter()
+            converter = GsonConverter(),
+            callAdapters = listOf(RxJava2CallAdapter(), DefaultCallAdapter())
         ).create(WebApi::class.java)
     }
 
     @Test
     fun get() {
-        val res = api.get(
+        api.get(
+            query = "qa",
+            queries = mapOf(Pair("qkey", "qval")),
+            header = "ha",
+            headers = mapOf(Pair("x-hkey", "hval"))
+        ).subscribe {
+            println("========================================")
+            println(it)
+            println("========================================")
+        }
+    }
+
+    @Test
+    fun get2() {
+        val res = api.get2(
             query = "qa",
             queries = mapOf(Pair("qkey", "qval")),
             header = "ha",
@@ -39,5 +55,6 @@ class Sample {
         println("========================================")
         println(res)
         println("========================================")
+
     }
 }

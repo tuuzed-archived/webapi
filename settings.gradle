@@ -1,5 +1,6 @@
 rootProject.name = 'webapi-proxy'
 include 'webapi-core'
+include 'webapi-adapter-rxjava2'
 include 'webapi-converter-gson'
 include 'webapi-sample'
 

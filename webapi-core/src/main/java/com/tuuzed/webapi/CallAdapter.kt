@@ -3,12 +3,9 @@ package com.tuuzed.webapi
 import java.lang.reflect.Method
 
 
-interface CallAdapter {
+interface CallAdapter<T> {
 
-    fun invoke(
-        method: Method,
-        converter: Converter,
-        originalCall: OkHttpCall
-    ): Call<*>
+    fun invoke(method: Method, converter: Converter, okHttpCall: OkHttpCall): T
+
 
 }

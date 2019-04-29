@@ -11,9 +11,9 @@ import java.lang.reflect.Method
 
 class RxJava2CallAdapter : CallAdapter<Flowable<*>> {
 
-    override fun invoke(method: Method, converter: Converter, originalCall: OkHttpCall): Flowable<*> {
+    override fun invoke(method: Method, converter: Converter, okHttpCall: OkHttpCall): Flowable<*> {
         return Flowable.create(FlowableOnSubscribe<Any> {
-            val response = originalCall.execute()
+            val response = okHttpCall.execute()
             it.onNext(
                 converter.tryInvoke(
                     ParameterizedTypeImpl(method.genericReturnType),

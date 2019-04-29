@@ -6,48 +6,45 @@ import okhttp3.Response
 import java.io.IOException
 import java.lang.reflect.Method
 
-class DefaultCallAdapter : CallAdapter {
+class DefaultCallAdapter : CallAdapter<Call<*>> {
 
-    override fun invoke(
-        method: Method,
-        converter: Converter,
-        originalCall: OkHttpCall
-    ): Call<*> {
-        return CallImpl(method, converter, originalCall)
+    override fun invoke(method: Method, converter: Converter, okHttpCall: OkHttpCall): Call<*> {
+        return CallImpl(method, converter, okHttpCall)
     }
 
     private class CallImpl(
         private val method: Method,
         private val converter: Converter,
-        private val originalCall: OkHttpCall
+        private val okHttpCall: OkHttpCall
     ) : Call<Any> {
         private val callImpl = this
-        override fun request(): Request = originalCall.request()
-        override fun cancel() = originalCall.cancel()
-        override fun isExecuted(): Boolean = originalCall.isExecuted
-        override fun isCanceled(): Boolean = originalCall.isCanceled
+        override fun request(): Request = okHttpCall.request()
+        override fun cancel() = okHttpCall.cancel()
+        override fun isExecuted(): Boolean = okHttpCall.isExecuted
+        override fun isCanceled(): Boolean = okHttpCall.isCanceled
 
         @Throws(IOException::class)
         override fun execute(): Any {
-            val response = originalCall.execute()
-            return converter.invoke(
+            val response = okHttpCall.execute()
+            return converter.tryInvoke(
                 ParameterizedTypeImpl(method.genericReturnType),
                 response
             )
         }
 
-        override fun enqueue(callback: Call.Callback<Any>) = originalCall.enqueue(object : Callback {
+        override fun enqueue(callback: Call.Callback<Any>) = okHttpCall.enqueue(object : Callback {
             override fun onFailure(call: OkHttpCall, e: IOException) = callback.onFailure(callImpl, e)
             override fun onResponse(call: OkHttpCall, response: Response) {
                 callback.onResponse(
                     callImpl,
-                    converter.invoke(
+                    converter.tryInvoke(
                         ParameterizedTypeImpl(method.genericReturnType),
                         response
                     )
                 )
             }
         })
+
     }
 
 }
