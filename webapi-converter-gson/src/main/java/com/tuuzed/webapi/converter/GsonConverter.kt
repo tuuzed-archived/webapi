@@ -4,7 +4,6 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonParseException
 import com.tuuzed.webapi.Converter
-import com.tuuzed.webapi.OkHttpResponse
 import com.tuuzed.webapi.WebApiException
 import java.io.IOException
 import java.lang.reflect.ParameterizedType
@@ -17,7 +16,7 @@ class GsonConverter @JvmOverloads constructor(
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    override fun <T> invoke(returnType: Type, response: OkHttpResponse): T {
+    override fun <T> invoke(returnType: Type, response: okhttp3.Response): T {
         @Suppress("MoveVariableDeclarationIntoWhen")
         val dataType = if (returnType is ParameterizedType) {
             returnType.ownerType

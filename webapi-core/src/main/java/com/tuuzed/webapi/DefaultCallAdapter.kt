@@ -8,14 +8,14 @@ import java.lang.reflect.Method
 
 class DefaultCallAdapter : CallAdapter<Call<*>> {
 
-    override fun invoke(method: Method, converter: Converter, okHttpCall: OkHttpCall): Call<*> {
+    override fun invoke(method: Method, converter: Converter, okHttpCall: okhttp3.Call): Call<*> {
         return CallImpl(method, converter, okHttpCall)
     }
 
     private class CallImpl(
         private val method: Method,
         private val converter: Converter,
-        private val okHttpCall: OkHttpCall
+        private val okHttpCall: okhttp3.Call
     ) : Call<Any> {
         private val callImpl = this
         override fun request(): Request = okHttpCall.request()
@@ -33,8 +33,8 @@ class DefaultCallAdapter : CallAdapter<Call<*>> {
         }
 
         override fun enqueue(callback: Call.Callback<Any>) = okHttpCall.enqueue(object : Callback {
-            override fun onFailure(call: OkHttpCall, e: IOException) = callback.onFailure(callImpl, e)
-            override fun onResponse(call: OkHttpCall, response: Response) {
+            override fun onFailure(call: okhttp3.Call, e: IOException) = callback.onFailure(callImpl, e)
+            override fun onResponse(call: okhttp3.Call, response: Response) {
                 callback.onResponse(
                     callImpl,
                     converter.tryInvoke(

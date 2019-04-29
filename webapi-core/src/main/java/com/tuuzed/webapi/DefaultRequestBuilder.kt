@@ -29,10 +29,14 @@ internal class DefaultRequestBuilder(
         val encodedQueryMap = linkedMapOf<String, String>()
         val headersBuilder = Headers.Builder()
         val fieldMap = linkedMapOf<String, String>()
-        val requestBodyList = LinkedList<RequestBody>()
         val fileMap = linkedMapOf<String, File>()
         val fileTypeMap = linkedMapOf<String, String>()
+
         val isFormUrlEncoded = method.isAnnotationPresent(FormUrlEncoded::class.java)
+        val isRawRequestBody = method.isAnnotationPresent(RawRequestBody::class.java)
+
+        var rawRequestBody: RequestBody? = null
+
         webApiClazz.getAnnotation(Header::class.java)?.let { if (it.line.contains(":")) headersBuilder.add(it.line) }
         method.getAnnotation(Header::class.java)?.let { if (it.line.contains(":")) headersBuilder.add(it.line) }
         //
@@ -59,64 +63,65 @@ internal class DefaultRequestBuilder(
                             fileMap[it.name] = argVal
                             fileTypeMap[it.name] = it.mediaType
                         }
-                        is RawRequestBody -> if (argVal is RequestBody) requestBodyList.add(argVal)
+                        is RawRequestBody -> if (argVal is RequestBody) rawRequestBody = argVal
                     }
                 }
             }
         }
         //
         val httpMethod: String = endpoint.method
-        val requestBody: RequestBody? =
-            if (HttpMethod.permitsRequestBody(httpMethod)) {
-                when {
-                    // 只有一个 RequestBody
-                    method.isAnnotationPresent(OnlyOneRequestBody::class.java) -> {
-                        if (requestBodyList.isEmpty()) {
-                            Util.EMPTY_REQUEST
-                        } else {
-                            requestBodyList.first
-                        }
-                    }
-                    // Multipart 表单
-                    method.isAnnotationPresent(Multipart::class.java) -> {
-                        if (fieldMap.isEmpty() && fileMap.isEmpty() && requestBodyList.isEmpty()) {
-                            Util.EMPTY_REQUEST
-                        } else {
-                            MultipartBody.Builder().also { builder ->
-                                fieldMap.entries.forEach { builder.addFormDataPart(it.key, it.value) }
-                                fileMap.entries.forEach {
-                                    builder.addFormDataPart(
-                                        it.key,
-                                        it.value.name,
-                                        RequestBody.create(
-                                            MediaType.parse(fileTypeMap[it.key] ?: "application/octet-stream"),
-                                            it.value
-                                        )
-                                    )
-                                }
-                            }.build()
-                        }
-                    }
-                    // FormUrlEncoded  表单
-                    method.isAnnotationPresent(FormUrlEncoded::class.java) -> {
-                        if (fieldMap.isEmpty()) {
-                            Util.EMPTY_REQUEST
-                        } else {
-                            FormBody.Builder().also { builder ->
-                                fieldMap.entries.forEach { builder.addEncoded(it.key, it.value) }
-                            }.build()
-
-                        }
-                    }
-                    // 默认 application/json; 表单
-                    else -> RequestBody.create(
-                        MediaType.parse("application/json; charset=${charset.name()}"),
-                        JSONObject(fieldMap).toString()
-                    )
+        val requestBody: RequestBody? = if (HttpMethod.permitsRequestBody(httpMethod)) {
+            when {
+                // 只有一个 RequestBody
+                isRawRequestBody -> {
+                    rawRequestBody ?: Util.EMPTY_REQUEST
                 }
-            } else {
-                null
+                // Multipart 表单
+                method.isAnnotationPresent(Multipart::class.java) -> {
+                    if (fieldMap.isEmpty() && fileMap.isEmpty()) {
+                        Util.EMPTY_REQUEST
+                    } else {
+                        MultipartBody.Builder().also { builder ->
+                            fieldMap.entries.forEach { builder.addFormDataPart(it.key, it.value) }
+                            fileMap.entries.forEach {
+                                builder.addFormDataPart(
+                                    it.key,
+                                    it.value.name,
+                                    RequestBody.create(
+                                        MediaType.parse(fileTypeMap[it.key] ?: "application/octet-stream"),
+                                        it.value
+                                    )
+                                )
+                            }
+                        }.build()
+                    }
+                }
+                // FormUrlEncoded  表单
+                isFormUrlEncoded -> {
+                    if (fieldMap.isEmpty()) {
+                        Util.EMPTY_REQUEST
+                    } else {
+                        FormBody.Builder().also { builder ->
+                            fieldMap.entries.forEach { builder.addEncoded(it.key, it.value) }
+                        }.build()
+
+                    }
+                }
+                // 默认 application/json; 表单
+                else -> {
+                    if (fieldMap.isEmpty()) {
+                        Util.EMPTY_REQUEST
+                    } else {
+                        RequestBody.create(
+                            MediaType.parse("application/json; charset=${charset.name()}"),
+                            JSONObject(fieldMap).toString()
+                        )
+                    }
+                }
             }
+        } else {
+            null
+        }
         val urlBuilder = StringBuilder(baseUrl())
         if (!urlBuilder.endsWith("/") && !endpointValue.startsWith("/")) {
             urlBuilder.append("/")

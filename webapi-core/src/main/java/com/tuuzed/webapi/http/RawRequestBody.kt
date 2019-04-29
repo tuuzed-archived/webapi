@@ -1,8 +1,5 @@
 package com.tuuzed.webapi.http
 
-/**
- * 用于标注 RequestBody
- */
-@Target(AnnotationTarget.VALUE_PARAMETER)
+@Target(AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class RawRequestBody

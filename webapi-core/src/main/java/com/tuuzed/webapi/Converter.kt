@@ -13,7 +13,7 @@ interface Converter {
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    fun <T> tryInvoke(returnType: Type, response: OkHttpResponse): T {
+    fun <T> tryInvoke(returnType: Type, response: Response): T {
         val dataType = if (returnType is ParameterizedType) {
             returnType.ownerType
         } else {
@@ -41,6 +41,6 @@ interface Converter {
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    fun <T> invoke(returnType: Type, response: OkHttpResponse): T
+    fun <T> invoke(returnType: Type, response: okhttp3.Response): T
 
 }

@@ -9,6 +9,7 @@ ext.artifactId = 'adapter-rxjava2'
 dependencies {
     implementation project(":webapi-core")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
     implementation 'io.reactivex.rxjava2:rxjava:2.2.8'
     testImplementation 'junit:junit:4.12'
 }

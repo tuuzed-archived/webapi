@@ -8,7 +8,7 @@ class DefaultConverter : Converter {
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    override fun <T> invoke(returnType: Type, response: OkHttpResponse): T {
+    override fun <T> invoke(returnType: Type, response: okhttp3.Response): T {
         throw WebApiException(WebApiException.CauseType.UNSUPPORTED_RETURN_TYPES)
     }
 }

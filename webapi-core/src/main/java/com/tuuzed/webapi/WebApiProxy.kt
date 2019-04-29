@@ -19,7 +19,6 @@ class WebApiProxy @JvmOverloads constructor(
     )
 ) {
 
-    private val cacheMethodCallAdapter = hashMapOf<Method, CallAdapter<*>>()
 
     companion object {
         var logger: Logger? = null
@@ -44,6 +43,8 @@ class WebApiProxy @JvmOverloads constructor(
         return findCallAdapter(method)?.invoke(method, converter, client.newCall(request))
             ?: throw RuntimeException("call adapter error")
     }
+
+    private val cacheMethodCallAdapter = hashMapOf<Method, CallAdapter<*>>()
 
     private fun findCallAdapter(method: Method): CallAdapter<*>? {
         val callAdapter = cacheMethodCallAdapter[method]

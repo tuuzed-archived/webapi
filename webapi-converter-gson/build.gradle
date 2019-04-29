@@ -9,6 +9,7 @@ ext.artifactId = 'adapter-gson'
 dependencies {
     implementation project(":webapi-core")
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    implementation 'com.squareup.okhttp3:okhttp:3.12.1'
     implementation 'com.google.code.gson:gson:2.8.5'
     testImplementation 'junit:junit:4.12'
 }
