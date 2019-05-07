@@ -9,7 +9,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.tuuzedwebapi:webapi:latest.release'
+    implementation 'com.tuuzed.webapi:webapi:latest.release'
     implementation 'com.tuuzed.webapi:converter-gson:latest.release'
 }
 ```
