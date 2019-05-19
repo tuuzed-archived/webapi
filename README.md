@@ -11,5 +11,7 @@ repositories {
 dependencies {
     implementation 'com.tuuzed.webapi:webapi:latest.release'
     implementation 'com.tuuzed.webapi:converter-gson:latest.release'
+    implementation 'com.tuuzed.webapi:coroutines:latest.release'
+    implementation 'com.tuuzed.webapi:adapter-rxjava2:latest.release'
 }
 ```

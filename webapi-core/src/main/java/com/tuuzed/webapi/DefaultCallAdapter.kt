@@ -3,13 +3,17 @@ package com.tuuzed.webapi
 import okhttp3.Callback
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.ResponseBody
+import okio.BufferedSource
 import java.io.IOException
+import java.io.InputStream
+import java.io.Reader
 import java.lang.reflect.Method
 
 class DefaultCallAdapter : CallAdapter<Call<*>> {
 
-    override fun invoke(method: Method, args: Array<Any?>?, converter: Converter, okHttpCall: okhttp3.Call): Call<*> {
-        return CallImpl(method, args, converter, okHttpCall)
+    override fun call(method: Method, args: Array<Any?>?, converter: Converter, originalCall: okhttp3.Call): Call<*> {
+        return CallImpl(method, args, converter, originalCall)
     }
 
     private class CallImpl(
@@ -27,19 +31,18 @@ class DefaultCallAdapter : CallAdapter<Call<*>> {
         @Throws(IOException::class)
         override fun execute(): Any {
             val response = okHttpCall.execute()
-            return converter.tryInvoke(method, args, response)
+            return ConverterUtils.tryConvert(converter, method, args, response)
         }
 
         override fun enqueue(callback: Call.Callback<Any>) = okHttpCall.enqueue(object : Callback {
             override fun onFailure(call: okhttp3.Call, e: IOException) = callback.onFailure(callImpl, e)
             override fun onResponse(call: okhttp3.Call, response: Response) {
-                callback.onResponse(
-                    callImpl,
-                    converter.tryInvoke(method, args, response)
-                )
+                callback.onResponse(callImpl, ConverterUtils.tryConvert(converter, method, args, response))
             }
         })
 
+
     }
+
 
 }

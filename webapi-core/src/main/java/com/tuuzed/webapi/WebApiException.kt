@@ -4,13 +4,14 @@ package com.tuuzed.webapi
 
 import java.io.IOException
 
-class WebApiException(
+class WebApiException constructor(
     val causeType: CauseType,
     message: String = causeType.message,
     cause: Throwable? = null
 ) : IOException(message, cause) {
 
-    companion object {
+    companion object Factory {
+
         @JvmStatic
         @JvmOverloads
         fun network(message: String = CauseType.NETWORK.message, cause: Throwable? = null) =

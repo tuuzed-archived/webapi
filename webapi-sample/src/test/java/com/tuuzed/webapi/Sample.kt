@@ -2,7 +2,10 @@ package com.tuuzed.webapi
 
 import com.tuuzed.webapi.adapter.RxJava2CallAdapter
 import com.tuuzed.webapi.converter.GsonConverter
+import com.tuuzed.webapi.coroutines.await
 import com.tuuzed.webapi.sample.WebApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.junit.Before
@@ -46,15 +49,17 @@ class Sample {
 
     @Test
     fun get2() {
-        val res = api.get2(
-            query = "qa",
-            queries = mapOf(Pair("qkey", "qval")),
-            header = "ha",
-            headers = mapOf(Pair("x-hkey", "hval"))
-        ).execute()
-        println("========================================")
-        println(res)
-        println("========================================")
-
+        GlobalScope.launch {
+            val res = api.get2(
+                query = "qa",
+                queries = mapOf(Pair("qkey", "qval")),
+                header = "ha",
+                headers = mapOf(Pair("x-hkey", "hval"))
+            ).await()
+            println("========================================")
+            println(res)
+            println("========================================")
+        }
+        System.`in`.read()
     }
 }

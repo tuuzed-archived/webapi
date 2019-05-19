@@ -5,6 +5,6 @@ import java.lang.reflect.Method
 
 interface RequestBuilder {
 
-    fun invoke(webApiClazz: Class<*>, method: Method, args: Array<Any?>?): Request
+    fun createRequest(webApiClazz: Class<*>, method: Method, args: Array<Any?>?): Request
 
 }

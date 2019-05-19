@@ -15,8 +15,8 @@ interface Call<T> {
     fun enqueue(callback: Callback<T>)
 
     interface Callback<T> {
-        fun onFailure(call: Call<*>, e: IOException)
-        fun onResponse(call: Call<*>, t: T)
+        fun onFailure(call: Call<T>, cause: IOException)
+        fun onResponse(call: Call<T>, t: T)
     }
 
 }

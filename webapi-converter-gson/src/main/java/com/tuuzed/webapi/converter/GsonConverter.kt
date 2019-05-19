@@ -16,7 +16,7 @@ class GsonConverter @JvmOverloads constructor(
 
     @Suppress("UNCHECKED_CAST")
     @Throws(IOException::class)
-    override fun <T> invoke(dataType: Type, args: Array<Any?>?, response: Response): T {
+    override fun <T> convert(dataType: Type, args: Array<Any?>?, response: Response): T {
         return try {
             val rst = gson.fromJson<T>(
                 response.body()?.charStream() ?: throw WebApiException.emptyResponseBody(),

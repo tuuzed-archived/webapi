@@ -29,18 +29,15 @@ class WebApiProxy @JvmOverloads constructor(
 
     fun <T> create(webApiClazz: Class<T>): T {
         @Suppress("UNCHECKED_CAST")
-        return Proxy.newProxyInstance(
-            webApiClazz.classLoader,
-            arrayOf(webApiClazz)
-        ) { _, method, args ->
-            val request = requestBuilder.invoke(webApiClazz, method, args)
-            return@newProxyInstance adapterInvoke(method, args, request)
+        return Proxy.newProxyInstance(webApiClazz.classLoader, arrayOf(webApiClazz)) { _, method, args ->
+            val request = requestBuilder.createRequest(webApiClazz, method, args)
+            return@newProxyInstance adapterCall(method, args, request)
         } as T
     }
 
-    private fun adapterInvoke(method: Method, args: Array<Any?>?, request: Request): Any? {
-        return findCallAdapter(method)?.invoke(method, args, converter, client.newCall(request))
-            ?: throw RuntimeException("call adapter error")
+    private fun adapterCall(method: Method, args: Array<Any?>?, request: Request): Any? {
+        val callAdapter = findCallAdapter(method) ?: throw RuntimeException("call adapter error")
+        return callAdapter.call(method, args, converter, client.newCall(request))
     }
 
     private val cacheMethodCallAdapter = hashMapOf<Method, CallAdapter<*>>()

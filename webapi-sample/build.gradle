@@ -10,9 +10,13 @@ targetCompatibility = 1.8
 
 dependencies {
     implementation project(":webapi-core")
+    implementation project(":webapi-coroutines")
     implementation project(":webapi-converter-gson")
     implementation project(":webapi-adapter-rxjava2")
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7"
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.1.1'
+
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
     implementation 'com.google.code.gson:gson:2.8.5'

@@ -18,11 +18,7 @@ internal class DefaultRequestBuilder(
 ) : RequestBuilder {
 
 
-    override fun invoke(webApiClazz: Class<*>, method: Method, args: Array<Any?>?): Request {
-        return createRequest(webApiClazz, method, args)
-    }
-
-    private fun createRequest(webApiClazz: Class<*>, method: Method, args: Array<Any?>?): Request {
+    override fun createRequest(webApiClazz: Class<*>, method: Method, args: Array<Any?>?): Request {
         val endpoint = method.getAnnotation(Endpoint::class.java)
             ?: throw IllegalStateException("Non @Endpoint, method: $method")
         var endpointValue = endpoint.value
