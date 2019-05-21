@@ -3,7 +3,7 @@ apply plugin: 'kotlin'
 
 group = rootProject.group
 version = rootProject.version
-ext.artifactId = 'adapter-gson'
+ext.artifactId = 'converter-gson'
 
 
 dependencies {
